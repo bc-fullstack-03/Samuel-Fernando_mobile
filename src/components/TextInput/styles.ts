@@ -10,6 +10,8 @@ export const styles = StyleSheet.create({
     minWidth: 240,
     padding: 12,
     borderRadius: 5,
+    borderWidth: 2,
+    borderColor: THEME.COLORS.BACKGROUND_600,
     backgroundColor: THEME.COLORS.BACKGROUND_600,
     flexDirection: 'row',
   },
