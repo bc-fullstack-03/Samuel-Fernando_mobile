@@ -5,6 +5,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Auth, UserToken } from '../model/Auth';
 import api from '../services/api';
 import { Profile } from '../model/Profile';
+import { navigate } from '../../RootNavigation';
 
 interface AuthContext {
   token: string | null;
@@ -15,6 +16,7 @@ interface AuthContext {
   login?: () => void;
   tryLocalLogin?: () => void;
   register?: () => void;
+  logout?: () => void;
 }
 
 const defaultValue = {
@@ -49,6 +51,12 @@ const Provider = ({ children }: { children: ReactNode }) => {
           ...state,
           ...action.payload,
           errorMessage: '',
+        };
+
+      case 'logout':
+        return {
+          ...defaultValue,
+          isLoading: false,
         };
 
       default:
@@ -109,7 +117,21 @@ const Provider = ({ children }: { children: ReactNode }) => {
     } catch (err) {
 
     }
-  }
+  };
+
+  const logout = async () => {
+    try {
+      await SecureStore.deleteItemAsync('accessToken');
+      await SecureStore.deleteItemAsync('profile');
+      await SecureStore.deleteItemAsync('userId');
+
+      dispatch({
+        type: 'logout',
+      });
+    } catch (err) {
+
+    }
+  };
 
   const register = async (auth: Auth) => {
     try {
@@ -118,6 +140,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
         type: 'user_created',
         isLoading: false,
       });
+      navigate('Login');
     } catch (err) {
       console.log(err);
       dispatch({
@@ -125,10 +148,10 @@ const Provider = ({ children }: { children: ReactNode }) => {
         payload: 'Ocorreu um erro na criação da conta',
       });
     }
-  }
+  };
 
   return (
-    <Context.Provider value={{...state, login, tryLocalLogin, register}}>
+    <Context.Provider value={{...state, login, tryLocalLogin, register, logout}}>
       {children}
     </Context.Provider>
   );
