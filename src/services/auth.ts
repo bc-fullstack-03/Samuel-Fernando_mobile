@@ -1,15 +1,12 @@
-import * as SecureStore from 'expo-secure-store';
-
-async function getAuthHeader() {
-  const token = await SecureStore.getItemAsync('accessToken');
-
+function generateAuthHeader(token: string, isFormData?: boolean) {
   const authHeader = {
     headers: {
       Authorization: `Bearer ${token}`,
+      ...(isFormData) && { 'Content-Type': 'multipart/form-data' },
     },
   };
 
   return authHeader;
 }
 
-export { getAuthHeader };
+export { generateAuthHeader };
