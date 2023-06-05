@@ -4,11 +4,12 @@ import * as SecureStore from 'expo-secure-store';
 
 import { Auth, UserToken } from '../model/Auth';
 import api from '../services/api';
+import { Profile } from '../model/Profile';
 
 interface AuthContext {
   token: string | null;
-  user: string | null;
-  profile: string | null;
+  userId: string | null;
+  profile: Profile | null;
   errorMessage: string | null;
   isLoading: boolean;
   login?: () => void;
@@ -18,7 +19,7 @@ interface AuthContext {
 
 const defaultValue = {
   token: null,
-  user: null,
+  userId: null,
   profile: null,
   errorMessage: null,
   isLoading: true,
@@ -92,7 +93,7 @@ const Provider = ({ children }: { children: ReactNode }) => {
     try {
       const [token, profile, userId] = await Promise.all([
         await SecureStore.getItemAsync('accessToken'),
-        await SecureStore.getItemAsync('profile'),
+        JSON.parse(await SecureStore.getItemAsync('profile') as string),
         await SecureStore.getItemAsync('userId'),
       ]);
 
