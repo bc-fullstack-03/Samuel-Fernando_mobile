@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     minHeight: 200,
     marginHorizontal: 12,
     marginTop: 12,
-    resizeMode: 'contain',
+    resizeMode: 'stretch',
     borderRadius: 5,
   },
   postDescription: {
