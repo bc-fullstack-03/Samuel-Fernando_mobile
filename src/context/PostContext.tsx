@@ -9,7 +9,8 @@ import { File } from '../model/File';
 
 interface PostContext {
   posts: Post[];
-  getPosts?: () => Post[];
+  isLastPostPage: boolean;
+  getPosts?: (page?: number) => Post[];
   likePost?: (postId: string) => void;
   unlikePost?: (postId: string) => void;
   createPost?: (newPost: PostCreate, file: File) => void;
@@ -23,6 +24,7 @@ interface PostCreate {
 
 const defaultValue = {
   posts: [],
+  isLastPostPage: false,
 };
 
 const Context = React.createContext<PostContext>(defaultValue);
@@ -37,7 +39,8 @@ const Provider = ({ children }: { children: ReactNode }) => {
       case 'show_posts':
         return {
           ...state,
-          posts: action.payload,
+          posts: [].concat(posts).concat(action.payload.posts),
+          isLastPostPage: action.payload.isLastPostPage,
         };
 
       case 'post_create': {
@@ -76,9 +79,9 @@ const Provider = ({ children }: { children: ReactNode }) => {
 
   const [state, dispatch] = useReducer(reducer, defaultValue);
 
-  const getPosts = async () => {
+  const getPosts = async (page?: number) => {
     try {
-      const { data } = await api.get(`/feed`, generateAuthHeader(token));
+      const { data } = await api.get(`/feed?page=${page}`, generateAuthHeader(token));
 
       const posts = data.postResponse.map((post: Post) => {
         return { ...post, liked: post.likes.includes(userId) }
@@ -86,7 +89,10 @@ const Provider = ({ children }: { children: ReactNode }) => {
 
       dispatch({
         type: 'show_posts',
-        payload: posts,
+        payload: {
+          posts,
+          isLastPostPage: data.pageableResponse.isLast,
+        },
       });
     } catch (err) {
       if (err.response.data.status === 401) {
@@ -117,7 +123,9 @@ const Provider = ({ children }: { children: ReactNode }) => {
           transformRequest: (data, headers) => {
             return postData;
           },
-        });
+        }
+      );
+
       const { data } = await api.get('/post', generateAuthHeader(token));
 
       dispatch({
