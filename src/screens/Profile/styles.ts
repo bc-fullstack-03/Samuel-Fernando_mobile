@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 36,
-    padding: 16,
     alignItems: 'center',
   },
   usernameText: {
