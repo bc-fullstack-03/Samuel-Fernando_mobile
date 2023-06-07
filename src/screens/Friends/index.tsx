@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { SafeAreaView, FlatList } from 'react-native';
+import { SafeAreaView, FlatList, View } from 'react-native';
 
 import api from '../../services/api';
 import { styles } from './styles';
@@ -8,10 +8,13 @@ import { Profile } from '../../model/Profile';
 import { Context as AuthContext } from '../../context/AuthContext';
 import { ToastAndroid } from 'react-native';
 import ProfileCard from '../../components/ProfileCard';
+import { TextInput } from '../../components/TextInput';
 
 function Friends({ navigation }) {
   const { token, userId, logout } = useContext(AuthContext);
+  const [searchResult, setSearchResult] = useState<Profile[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const renderProfiles = searchResult.length > 0 ? searchResult : profiles;
 
   useEffect(() => {
     const getProfiles = async () => {
@@ -30,10 +33,27 @@ function Friends({ navigation }) {
     getProfiles();
   }, []);
 
+  async function searchProfiles(search: string) {
+    try {
+      const { data } = await api.get(`/profile?name=${search}`, generateAuthHeader(token));
+      setSearchResult(data);
+    } catch (err) {
+      ToastAndroid.show('Ocorreu um erro ao buscar um usuário', ToastAndroid.SHORT);
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput.Root>
+          <TextInput.Input
+            placeholder='Buscar por nome'
+            onChangeText={(name) => searchProfiles(name)}
+          />
+        </TextInput.Root>
+      </View>
       <FlatList
-        data={profiles}
+        data={renderProfiles}
         keyExtractor={({ idUser }) => idUser}
         renderItem={({ item }) => {
           return item.idUser != userId && (
