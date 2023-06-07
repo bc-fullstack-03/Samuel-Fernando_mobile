@@ -1,5 +1,5 @@
 import { useContext, useEffect, useId, useState } from 'react';
-import { SafeAreaView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { PHOTO_SERVICE_HOST } from '@env';
 
 import { Post } from '../../model/Post';
@@ -7,9 +7,8 @@ import { styles } from './styles';
 import { Context as AuthContext } from '../../context/AuthContext';
 import api from '../../services/api';
 import { generateAuthHeader } from '../../services/auth';
-import { FlatList, Image, KeyboardAvoidingView, Text, View } from 'react-native';
+import { FlatList, Image, Text, View } from 'react-native';
 import PostCard from '../../components/PostCard';
-import Spacer from '../../components/Spacer';
 import { TextInput } from '../../components/TextInput';
 import Button from '../../components/Button';
 import { UserCircle } from 'phosphor-react-native';
@@ -23,6 +22,7 @@ function PostDetail({ route }: PostDetailProps) {
   const { token, userId } = useContext(AuthContext);
   const [post, setPost] = useState<Post>();
   const [description, setDescription] = useState('');
+  const [errorComment, setErrorComment] = useState('');
 
   useEffect(() => {
     const getPost = async () => {
@@ -41,9 +41,15 @@ function PostDetail({ route }: PostDetailProps) {
     }
 
     getPost();
-  }, [post.likes]);
+  }, [post]);
 
   const addComment = async () => {
+    if (description.length < 3) {
+      setErrorComment('O comentário precisa ter ao menos 3 caracteres');
+      return;
+    }
+
+    setDescription("");
     try {
       await api.post(
         `/post/${id}/comments`,
@@ -71,14 +77,17 @@ function PostDetail({ route }: PostDetailProps) {
                 <TextInput.Input
                   placeholder='Novo comentário'
                   value={description}
-                  onChangeText={setDescription}
+                  onChangeText={(text) => {
+                    setDescription(text);
+                    setErrorComment('');
+                  }}
                 />
               </TextInput.Root>
+              {errorComment && <Text style={styles.textError}>{errorComment}</Text>}
               <Button
                 width={360}
                 title='Publicar'
                 onPress={() => {
-                  setDescription("");
                   addComment();
                 }}
               />
@@ -86,8 +95,9 @@ function PostDetail({ route }: PostDetailProps) {
                 <FlatList
                   nestedScrollEnabled
                   data={post.comments}
-                  keyExtractor={({ _id }) => _id}
+                  keyExtractor={({ id }) => id}
                   renderItem={({ item }: { item: any }) => {
+                    console.log(item);
                     return (
                       <>
                         <View style={styles.heading}>

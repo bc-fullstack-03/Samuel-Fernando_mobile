@@ -6,6 +6,7 @@ export const THEME = {
     CAPTION_400: '#7C7C8A',
     CYAN_300: '#4DD0E1',
     BUTTON: '#81D8F7',
+    ERROR: '#C21807',
   },
   FONTS: {
     REGULAR: 'Inter_400Regular',

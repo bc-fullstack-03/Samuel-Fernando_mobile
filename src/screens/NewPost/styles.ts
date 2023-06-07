@@ -39,4 +39,9 @@ export const styles = StyleSheet.create({
   buttonContainer: {
     paddingTop: 14,
   },
+  textError: {
+    color: THEME.COLORS.ERROR,
+    fontFamily: THEME.FONTS.REGULAR,
+    fontSize: THEME.FONT_SIZES.SM,
+  },
 });

@@ -42,4 +42,9 @@ export const styles = StyleSheet.create({
     paddingLeft: 52,
     paddingBottom: 5,
   },
+  textError: {
+    color: THEME.COLORS.ERROR,
+    fontFamily: THEME.FONTS.REGULAR,
+    fontSize: THEME.FONT_SIZES.SM,
+  },
 });

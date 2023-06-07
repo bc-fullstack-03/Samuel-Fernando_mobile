@@ -25,6 +25,10 @@ function AuthForm(props: AuthFormProps) {
     email: '',
     password: '',
   });
+  const [hasErrors, setHasErrors] = useState(false);
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
+  const [errorName, setErrorName] = useState('');
 
   useEffect(() => {
     const setRegisterName = () => {
@@ -33,9 +37,33 @@ function AuthForm(props: AuthFormProps) {
 
     if (props.registerName) {
       setRegisterName();
+      setHasErrors(false);
+      setErrorName('');
     }
   }, [props.registerName]);
 
+  const handleSubmitAction = () => {
+    if (props.children && auth.name.length < 3) {
+      setHasErrors(true);
+      setErrorName('O nome precisa ter ao menos 3 caracteres');
+    }
+
+    if (auth.email.length < 3) {
+      setHasErrors(true);
+      setErrorEmail('O email precisa ter ao menos 3 caracteres');
+    }
+
+    if (auth.password.length < 3) {
+      setHasErrors(true);
+      setErrorPassword('A senha precisa ter ao menos 3 caracteres');
+    }
+
+    if (hasErrors) {
+      return;
+    }
+
+    props.submitAction(auth);
+  }
 
   return (
     <KeyboardAvoidingView
@@ -46,6 +74,7 @@ function AuthForm(props: AuthFormProps) {
       <Image source={logo} style={styles.logo} resizeMethod='scale' />
       <Heading title='SysMap Parrot' subtitle={props.authFormSubtitle} />
       {props.children}
+      {errorName && <Text style={styles.textError}>{errorName}</Text>}
       <View style={styles.captionContainer}>
         <Text style={styles.caption}>Endereço de e-mail</Text>
       </View>
@@ -55,12 +84,17 @@ function AuthForm(props: AuthFormProps) {
         </TextInput.Icon>
         <TextInput.Input
           value={auth.email}
-          onChangeText={(value) => setAuth({...auth, email: value })}
+          onChangeText={(value) => {
+            setAuth({...auth, email: value });
+            setErrorEmail('');
+            setHasErrors(false);
+          }}
           placeholder='Digite seu e-mail'
           autoCapitalize='none'
           keyboardType='email-address'
         />
       </TextInput.Root>
+      {errorEmail && <Text style={styles.textError}>{errorEmail}</Text>}
       <Spacer />
       <View style={styles.captionContainer}>
         <Text style={styles.caption}>Senha</Text>
@@ -71,18 +105,23 @@ function AuthForm(props: AuthFormProps) {
         </TextInput.Icon>
         <TextInput.Input
           value={auth.password}
-          onChangeText={(value) => setAuth({...auth, password: value })}
+          onChangeText={(value) => {
+            setAuth({...auth, password: value });
+            setHasErrors(false);
+            setErrorPassword('');
+          }}
           placeholder='Digite sua senha'
           autoCapitalize='none'
           autoCorrect={false}
           secureTextEntry
         />
       </TextInput.Root>
+      {errorPassword && <Text style={styles.textError}>{errorPassword}</Text>}
       <Spacer />
       <Button
         title={props.submitFormButtonText}
         width={240}
-        onPress={() => props.submitAction(auth)}
+        onPress={() => handleSubmitAction()}
       />
     </KeyboardAvoidingView>
   );

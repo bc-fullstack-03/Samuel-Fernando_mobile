@@ -26,4 +26,10 @@ export const styles = StyleSheet.create({
     fontFamily: THEME.FONTS.REGULAR,
     fontSize: THEME.FONT_SIZES.SM,
   },
+  textError: {
+    paddingTop: 5,
+    color: THEME.COLORS.ERROR,
+    fontFamily: THEME.FONTS.REGULAR,
+    fontSize: THEME.FONT_SIZES.SM,
+  },
 });

@@ -16,6 +16,27 @@ function NewPost() {
   const { createPost } = useContext(PostContext);
   const [newPostData, setNewPostData] = useState({ title: '', description: '', isImage: false });
   const [image, setImage] = useState<File>();
+  const [errorTitle, setErrorTitle] = useState('');
+  const [errorDescription, setErrorDescription] = useState('');
+
+  const handlePostSubmit = () => {
+    newPostData.isImage = image ? true : false;
+
+    if (newPostData.title.length < 3) {
+      setErrorTitle('O título do Post deve ter ao menos 3 caracteres');
+    }
+
+    if (newPostData.title.length < 3 && newPostData.isImage) {
+      return;
+    }
+
+    if (!newPostData.isImage && newPostData.description.length < 3) {
+      setErrorDescription('A descrição do Post deve ter ao menos 3 caracteres');
+      return;
+    }
+
+    createPost(newPostData, image ? image : null)
+  };
 
   return (
     <View style={styles.container}>
@@ -34,20 +55,28 @@ function NewPost() {
         <TextInput.Root>
           <TextInput.Input
             value={newPostData.title}
-            onChangeText={(value) => setNewPostData({ ...newPostData, title: value })}
+            onChangeText={(value) => {
+              setNewPostData({ ...newPostData, title: value });
+              setErrorTitle('');
+            }}
             placeholder='Digite o título do Post'
           />
         </TextInput.Root>
+        {errorTitle && <Text style={styles.textError}>{errorTitle}</Text>}
         {image ? '' : (
           <>
             <Text style={styles.captionText}>Descrição do Post</Text>
             <TextInput.Root>
               <TextInput.Input
                 value={newPostData.description}
-                onChangeText={(value) => setNewPostData({ ...newPostData, description: value })}
+                onChangeText={(value) => {
+                  setNewPostData({ ...newPostData, description: value });
+                  setErrorDescription('');
+                }}
                 placeholder='Digite a descrição do Post'
               />
             </TextInput.Root>
+            {errorDescription && <Text style={styles.textError}>{errorDescription}</Text>}
           </>
         )}
         <ImagePicker onFileLoaded={setImage} />
@@ -55,7 +84,7 @@ function NewPost() {
           <Button
             width={360}
             title='Postar'
-            onPress={() => createPost(newPostData, image ? image : null)}
+            onPress={() => handlePostSubmit()}
           />
         </View>
       </View>
