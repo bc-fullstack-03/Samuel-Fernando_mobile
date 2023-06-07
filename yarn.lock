@@ -6373,6 +6373,11 @@ react-native-gradle-plugin@^0.71.15:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.18.tgz#20ef199bc85be32e45bb6cc069ec2e7dcb1a74a6"
   integrity sha512-7F6bD7B8Xsn3JllxcwHhFcsl9aHIig47+3eN4IHFNqfLhZr++3ElDrcqfMzugM+niWbaMi7bJ0kAkAL8eCpdWg==
 
+react-native-infinite-scrolling@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-infinite-scrolling/-/react-native-infinite-scrolling-2.0.0.tgz#e355fe3d171f6ef6b619b45a5c02aaec17e00a14"
+  integrity sha512-J4pbxuhnWy1PQl50+Msht/EwCZQDe2S8eJ935bHy8Xh/OQI3F+FBeAeAKctcFWYwUKrUVfCuElK5KoTiZYGdgA==
+
 react-native-safe-area-context@4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.5.0.tgz#9208313236e8f49e1920ac1e2a2c975f03aed284"
