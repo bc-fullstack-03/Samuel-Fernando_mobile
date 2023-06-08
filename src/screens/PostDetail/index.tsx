@@ -97,7 +97,6 @@ function PostDetail({ route }: PostDetailProps) {
                   data={post.comments}
                   keyExtractor={({ id }) => id}
                   renderItem={({ item }: { item: any }) => {
-                    console.log(item);
                     return (
                       <>
                         <View style={styles.heading}>
